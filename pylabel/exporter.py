@@ -738,7 +738,44 @@ class Export:
                 output_file_paths = [path_dict["yaml_path"]] + output_file_paths
 
         return output_file_paths
+    
+    
+    def ExportToYoloV5Splits(
+        self,
+        output_path=".",
+    ):
+        """Writes split files to disk in YOLOv5 format.
 
+        Args:
+
+            output_path (str):
+                This is where the annotation files will be written.
+                If not-specified then the path will be derived from the .path_to_annotations and
+                .name properties of the dataset object. If you are exporting images to train a model, the recommended path
+                to use is 'training/labels'.
+
+        Returns:
+            None
+
+        Examples:
+            >>> dataset.export.ExportToYoloV5Splits(output_path='.')
+
+        """
+
+        os.makedirs(output_path, exist_ok=True)
+        df = self.dataset.df
+        splits = df["split"].unique().tolist()
+        for split in splits:
+            split_df = df[df["split"] == split]
+            if (df["img_path"]=='').all():
+                split_df = split_df["img_folder"].str.cat(split_df["img_filename"], sep=os.sep)
+            else:
+                split_df = split_df["img_path"]
+            split_list = split_df.tolist()
+            s = "\n".join(split_list)
+            with open(os.path.join(output_path, f"{split}.txt"), "w") as f:
+                f.write(s)
+            
     def ExportToCoco(self, output_path=None, cat_id_index=None):
         """
         Writes COCO annotation files to disk (in JSON format) and returns the path to files.

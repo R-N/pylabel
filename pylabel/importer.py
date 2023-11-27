@@ -343,6 +343,7 @@ def ImportYoloV5(
             ), f"No image file found: {image_path}. Check path_to_images and img_ext arguments."
 
             row["img_filename"] = image_filename
+            row["img_path"] = os.path.join(path_to_images, image_filename)
 
             imgstream = open(str(image_path), "rb")
             imgbytes = bytearray(imgstream.read())
