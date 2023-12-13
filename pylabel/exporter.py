@@ -772,6 +772,7 @@ class Export:
             else:
                 split_df = split_df["img_path"]
             split_list = split_df.tolist()
+            split_list = list(set(split_list))
             s = "\n".join(split_list)
             with open(os.path.join(output_path, f"{split}.txt"), "w") as f:
                 f.write(s)
